@@ -167,8 +167,8 @@ std::list<Creator> CPlugins::findPluginsByClassID(const char* clsid) const
 
     if (locker.canRead())
     {
-        auto it = _clsmap.equal_range(clsid);
-        auto first = it.first;
+        std::pair<CreatorMap::const_iterator, CreatorMap::const_iterator> it = _clsmap.equal_range(clsid);
+        CreatorMap::const_iterator first = it.first;
         while (first != it.second)
         {
             ret.push_back(first->second);

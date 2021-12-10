@@ -165,7 +165,7 @@ private:
 typedef Object<IObject> AnyObject;
 
 template <class I>
-class Objects : public std::list<Object<I>>
+class Objects : public std::list<Object<I> >
 {
 public:
     Objects(const char *clsid)
@@ -173,8 +173,9 @@ public:
         std::list<IObject *> objs;
         createObjects(clsid, I::getIID(), &objs);
         
-        for(const auto& v: objs){
-            this->emplace_back(v);
+        for(std::list<IObject *>::const_iterator iter = objs.begin();iter != objs.end();++iter)
+        {
+            this->push_back(Object<I>(*iter));
         }
     }
 };

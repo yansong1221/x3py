@@ -16,6 +16,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${PROJECT_SOURCES})
 
 add_library(${PROJECT_NAME} SHARED ${PROJECT_SOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".pln")
+set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE _USRDLL)
 

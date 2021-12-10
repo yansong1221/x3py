@@ -135,8 +135,9 @@ int test()
     //x3::Object<ISimple> p(clsidSimple);
     x3::Objects<ISimple> simples(clsidSimple);
     
-    for (const auto p : simples)
+    for (x3::Objects<ISimple>::const_iterator iter = simples.begin(); iter != simples.end();  iter++)
     {
+        x3::Object<ISimple> p = *iter;
         if (p)
         {
             printf("The plugin is loaded (%s in %s).\n",
