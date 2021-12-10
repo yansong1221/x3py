@@ -4,7 +4,7 @@
 
 #include <utilfunc/scanfiles.h>
 #include <utilfunc/loadmodule.h>
-
+#include <list>
 #if defined(X3_CORE_PORTABILITY_H) && !defined(X3_EXCLUDE_CREATEOBJECT)
 #include <portability/portimpl.h>
 #endif
@@ -77,6 +77,12 @@ LOCALAPI bool createObject(const char* clsid, long iid, IObject** p)
     typedef bool (*F)(const char*, long, IObject**);
     F f = (F)GetProcAddress(s_modules[0], "x3CreateObject");
     return f && f(clsid, iid, p);
+}
+LOCALAPI bool createObjects(const char* clsid, long iid, std::list<IObject *>* objs)
+{
+    typedef bool (*F)(const char*, long, std::list<IObject *>* );
+    F f = (F)GetProcAddress(s_modules[0], "x3CreateObjects");
+    return f && f(clsid, iid, objs);
 }
 HMODULE getManagerModule() { return s_modules[0]; }
 #endif // CREATEOBJECTIMPL

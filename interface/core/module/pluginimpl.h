@@ -3,6 +3,7 @@
 
 #include "classentry.h"
 #include "moduleitem.h"
+#include <list>
 #ifdef X3_CORE_PORTABILITY_H
 #include "../portability/portimpl.h"
 #endif
@@ -101,6 +102,25 @@ OUTAPI bool x3InternalCreate(const char* clsid, long iid, IObject** p)
     }
 
     return false;
+}
+OUTAPI bool x3InternalCreates(const char *clsid, long iid, std::list<IObject *> *objs)
+{
+    if (0 == *clsid)
+    {
+        getDefaultClassID(iid, clsid);
+    }
+    for (const ClassEntry *const *arr = ClassEntry::classes; *arr; arr++)
+    {
+        for (const ClassEntry *cls = *arr; cls->creator; cls++)
+        {
+            if (strcmp(cls->clsid, clsid) == 0)
+            {
+                objs->push_back(cls->creator(iid));
+            }
+        }
+    }
+
+    return true;
 }
 
 OUTAPI bool x3FreePlugin()

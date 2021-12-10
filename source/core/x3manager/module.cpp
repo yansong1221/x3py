@@ -76,6 +76,13 @@ OUTAPI bool x3CreateObject(const char* clsid, long iid, IObject** p)
     return reg && reg->createFromOthers(clsid, iid, p);
 }
 
+OUTAPI bool x3CreateObjects(const char *clsid, long iid, std::list<IObject*> *objs)
+{
+    x3InternalCreates(clsid, iid,objs);
+    Object<IRegister> reg(clsidManager);
+    return reg && reg->createFromOthers(clsid, iid, objs);
+}
+
 OUTAPI bool x3RegisterObserver(const char* type, PROC handler, Creator creator)
 {
     Object<IRegister> reg(clsidManager);

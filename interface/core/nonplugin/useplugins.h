@@ -4,6 +4,7 @@
 
 #include <utilfunc/loadmodule.h>
 #include "swigext.h"
+#include <list>
 
 // PLUGIN_PATH:         the internal plugin (*.pln) 's relative folder.
 // SELF_MODULE_NAME:    file name of the caller module which will load the internal plugins.
@@ -40,6 +41,12 @@ bool createObject(const char* clsid, long iid, IObject** p)
     typedef bool (*F)(const char*, long, IObject**);
     F f = !s_plugins[0] ? NULL : (F)s_plugins[0]->getFunc("x3CreateObject");
     return f && f(clsid, iid, p);
+}
+bool createObjects(const char* clsid, long iid, std::list<IObject*>* objs)
+{
+    typedef bool (*F)(const char*, long, std::list<IObject*>*);
+    F f = !s_plugins[0] ? NULL : (F)s_plugins[0]->getFunc("x3CreateObjects");
+    return f && f(clsid, iid, objs);
 }
 #endif // CREATEOBJECTIMPL
 

@@ -1,5 +1,5 @@
 
-option(BUILD_EXAMPLE "BUILD EXAMPLE" OFF)
+option(BUILD_EXAMPLE "BUILD EXAMPLE" ON)
 add_subdirectory(core)
 
 IF(BUILD_EXAMPLE)

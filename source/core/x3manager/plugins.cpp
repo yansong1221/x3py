@@ -160,7 +160,23 @@ Creator CPlugins::findPluginByClassID(const char* clsid) const
 
     return ret;
 }
+std::list<Creator> CPlugins::findPluginsByClassID(const char* clsid) const
+{
+    LockRW locker(_clsmap.locker);
+    std::list<Creator> ret;
 
+    if (locker.canRead())
+    {
+        auto it = _clsmap.equal_range(clsid);
+        auto first = it.first;
+        while (first != it.second)
+        {
+            ret.push_back(first->second);
+            ++first;
+        }
+    }
+    return ret;
+}
 bool CPlugins::createFromOthers(const char* clsid, long iid, IObject** p)
 {
     Creator creator = findPluginByClassID(clsid);
@@ -169,6 +185,16 @@ bool CPlugins::createFromOthers(const char* clsid, long iid, IObject** p)
         return true;
     }
     return false;
+}
+bool CPlugins::createFromOthers(const char* clsid, long iid, std::list<IObject*>* objs)
+{
+    auto creators = findPluginsByClassID(clsid);
+    for(auto creator : creators){
+        x3::IObject* p;
+        if(creator(clsid,iid,&p))
+            objs->push_back(p);
+    }
+    return true;
 }
 
 bool CPlugins::registerObserver(const char* type, PROC handler, Creator creator)

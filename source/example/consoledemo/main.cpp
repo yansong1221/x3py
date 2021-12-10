@@ -3,13 +3,13 @@
 // 4: use static library plugin, 5: find and load plugins
 //
 #ifndef LOADMODE
-#define LOADMODE  5
+#define LOADMODE 5
 #endif
 
 int test();
 
 //---------------------------------------------------------------
-#if   LOADMODE==1   // use multiple plugins: plugins/*.pln
+#if LOADMODE == 1 // use multiple plugins: plugins/*.pln
 //---------------------------------------------------------------
 
 #include <portability/x3port.h>
@@ -17,21 +17,20 @@ int test();
 
 int main()
 {
-    const char* plugins[] = {
-        "x3manager.pln", "plsimple.pln", "observerex.pln", NULL
-    };
+    const char *plugins[] = {
+        "x3manager.pln", "plsimple.pln", "observerex.pln", NULL};
     x3::AutoLoadPlugins autoload(plugins, "plugins");
 
     return test();
 }
 
 //---------------------------------------------------------------
-#elif LOADMODE==2   // use only one plugin: plugins/plsimple.pln
+#elif LOADMODE == 2 // use only one plugin: plugins/plsimple.pln
 //---------------------------------------------------------------
 
 #include <portability/x3port.h>
-#define PLUGIN_PATH  "plugins/"
-#define PLUGIN_NAME  "plsimple"
+#define PLUGIN_PATH "plugins/"
+#define PLUGIN_NAME "plsimple"
 #include <nonplugin/useplugin.h>
 
 int main()
@@ -40,21 +39,20 @@ int main()
 }
 
 //---------------------------------------------------------------
-#elif LOADMODE==3   // raw loading mode
+#elif LOADMODE == 3 // raw loading mode
 //---------------------------------------------------------------
 
 #include <portability/portimpl.h>
 
-HMODULE modules[10] = { NULL };
+HMODULE modules[10] = {NULL};
 
 int main()
 {
-    const char* plugins[] = { 
-        "plugins/x3manager.pln", 
-        "plugins/plsimple.pln", 
+    const char *plugins[] = {
+        "plugins/x3manager.pln",
+        "plugins/plsimple.pln",
         "plugins/observerex.pln",
-        NULL
-    };
+        NULL};
     int count = 0;
 
     for (int i = 0; plugins[i]; i++)
@@ -74,18 +72,19 @@ int main()
     return ret;
 }
 
-namespace x3 {
-class IObject;
-bool createObject(const char* clsid, long iid, IObject** p)
+namespace x3
 {
-    typedef bool (*F)(const char*, long, IObject**);
-    F f = (F)GetProcAddress(modules[0], "x3CreateObject");
-    return f && f(clsid, iid, p);
-}
+    class IObject;
+    bool createObject(const char *clsid, long iid, IObject **p)
+    {
+        typedef bool (*F)(const char *, long, IObject **);
+        F f = (F)GetProcAddress(modules[0], "x3CreateObject");
+        return f && f(clsid, iid, p);
+    }
 } // x3
 
 //---------------------------------------------------------------
-#elif LOADMODE==4   // use static library plugin
+#elif LOADMODE == 4 // use static library plugin
 //---------------------------------------------------------------
 
 #include <portability/x3port.h>
@@ -98,11 +97,10 @@ XDEFINE_EMPTY_MODULE()
 #pragma comment(lib, "libpln1.lib")
 #endif
 
-extern const x3::ClassEntry* const classes_libpln1;
+extern const x3::ClassEntry *const classes_libpln1;
 
-const x3::ClassEntry* const x3::ClassEntry::classes[] = {
-        s_classes, classes_libpln1, NULL
-    };
+const x3::ClassEntry *const x3::ClassEntry::classes[] = {
+    s_classes, classes_libpln1, NULL};
 
 int main()
 {
@@ -110,7 +108,7 @@ int main()
 }
 
 //---------------------------------------------------------------
-#elif LOADMODE==5   // find and load plugins
+#elif LOADMODE == 5 // find and load plugins
 //---------------------------------------------------------------
 
 #include <portability/x3port.h>
@@ -121,6 +119,7 @@ int main()
     x3::loadScanPlugins();
 
     int ret = test();
+    //test2();
 
     x3::unloadScanPlugins();
 
@@ -135,28 +134,31 @@ int main()
 
 int test()
 {
-    x3::Object<ISimple> p(clsidSimple);
-
-    if (p)
+    //x3::Object<ISimple> p(clsidSimple);
+    x3::Objects<ISimple> simples(clsidSimple);
+    for (const auto p : simples)
     {
-        printf("The plugin is loaded (%s in %s).\n", 
-            p->getInterfaceName(), p->getClassName());
-    }
-    else
-    {
-        printf("The plugin is not loaded.\n");
-        return 1;
-    }
+        if (p)
+        {
+            printf("The plugin is loaded (%s in %s).\n",
+                   p->getInterfaceName(), p->getClassName());
+        }
+        else
+        {
+            printf("The plugin is not loaded.\n");
+            return 1;
+        }
 
-    int sum = p->add(1, 2);
-    printf("p->add(1, 2): %d\n", sum);
+        int sum = p->add(1, 2);
+        printf("p->add(1, 2): %d\n", sum);
 
-    if (sum != 3)
-    {
-        printf("diffrent implement\n");
-        return 2;
+        if (sum != 3)
+        {
+            printf("diffrent implement\n");
+            return 2;
+        }
+
+        printf("Goodbye\n");
     }
-
-    printf("Goodbye\n");
     return 0;
 }

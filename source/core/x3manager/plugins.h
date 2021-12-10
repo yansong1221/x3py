@@ -7,7 +7,7 @@
 #include <observer/observerobject.h>
 #include <utilfunc/lockrw.h>
 #include <utilfunc/vecfunc.h>
-
+#include <list>
 #if !defined(_MSC_VER) || _MSC_VER >= 1700
 #include <unordered_map>
 #define hash_multimap std::unordered_multimap
@@ -32,6 +32,7 @@ class IRegister : public IObject
     virtual bool registerPlugin(Creator creator, HMODULE hmod, const char** clsids) = 0;
     virtual void unregisterPlugin(Creator creator) = 0;    
     virtual bool createFromOthers(const char* clsid, long iid, IObject** p) = 0;
+    virtual bool createFromOthers(const char* clsid, long iid, std::list<IObject*>* objs) = 0;
     virtual HMODULE findModuleByFileName(const char* filename) = 0;
 
     virtual bool registerObserver(const char* type, PROC handler, Creator creator) = 0;
@@ -57,6 +58,7 @@ private:
     virtual bool registerPlugin(Creator creator, HMODULE hmod, const char** clsids);
     virtual void unregisterPlugin(Creator creator);
     virtual bool createFromOthers(const char* clsid, long iid, IObject** p);
+    virtual bool createFromOthers(const char* clsid, long iid, std::list<IObject*>* objs);
     virtual HMODULE findModuleByFileName(const char* filename);
 
     virtual bool registerObserver(const char* type, PROC handler, Creator creator);
@@ -69,7 +71,7 @@ private:
     virtual int getPluginCount() const;
     virtual void getPluginFiles(std::vector<std::string>& files) const;
     virtual Creator findPluginByClassID(const char* clsid) const;
-
+    virtual std::list<Creator> findPluginsByClassID(const char* clsid) const;
 private:
     typedef std::pair<Creator, HMODULE> Plugin;
     typedef hash_multimap<std::string, Creator> CreatorMap;

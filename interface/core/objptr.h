@@ -3,11 +3,13 @@
 #define X3_CORE_OBJPTR_H
 
 #include "iobject.h"
+#include <list>
 
 BEGIN_NAMESPACE_X3
 
 #ifndef SWIG
 LOCALAPI bool createObject(const char* clsid, long iid, IObject** p);
+LOCALAPI bool createObjects(const char *clsid, long iid, std::list<IObject *> *objs);
 struct NullPointerError {};
 #ifndef X3THROW_NULLPOINTERERROR
 #define X3THROW_NULLPOINTERERROR(name) throw x3::NullPointerError()
@@ -161,6 +163,21 @@ private:
 };
 
 typedef Object<IObject> AnyObject;
+
+template <class I>
+class Objects : public std::list<Object<I>>
+{
+public:
+    Objects(const char *clsid)
+    {
+        std::list<IObject *> objs;
+        createObjects(clsid, I::getIID(), &objs);
+        
+        for(const auto& v: objs){
+            this->emplace_back(v);
+        }
+    }
+};
 
 END_NAMESPACE_X3
 #endif
