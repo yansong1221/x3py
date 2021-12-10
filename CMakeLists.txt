@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.6)
 
 project(x3py)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/out/Debug/Bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/out/Debug/Bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/out/Debug/Bin)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/out/Release/Bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/out/Release/Bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/out/Release/Bin)
+set(OUTPUT_DIR_DEBUG ${CMAKE_CURRENT_BINARY_DIR}/out/Debug)
+SET(OUTPUT_DIR_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/out/Release)
 
-include_directories(interface/core)
-include_directories(interface/example)
-add_subdirectory(source)
+include_directories(include)
+add_subdirectory(x3manager)
+
+option(BUILD_EXAMPLE "BUILD EXAMPLE" ON)
+IF (BUILD_EXAMPLE)
+    add_subdirectory(example)
+ENDIF()

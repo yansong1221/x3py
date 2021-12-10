@@ -1,0 +1,3 @@
+include_directories(interface)
+add_subdirectory(consoledemo)
+add_subdirectory(plugins)
